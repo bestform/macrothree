@@ -1,11 +1,17 @@
 use macroquad::prelude::*;
 use crate::{Particle, Star, Bullet, Player, PLAYER_SPEED, TOP_MARGIN, BOTTOM_MARGIN, PLAYER_SIZE, PlayerMovementState, ENABLE_PARALLAX};
 use crate::math::{clampx, clampy};
-use crate::structs::Enemy;
+use crate::structs::{Enemy, FloatingMessage};
 
 pub fn handle_particles_move(particles: &mut Vec<Particle>) {
     for particle in particles {
         particle.pos += particle.vel;
+    }
+}
+
+pub fn handle_messages_move(messages: &mut Vec<FloatingMessage>) {
+    for m in messages {
+        m.pos += Vec2::new(0., -2.);
     }
 }
 

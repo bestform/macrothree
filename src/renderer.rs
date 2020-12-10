@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
-use crate::{Particle, Star, Bullet, BULLET_SIZE, Player, PLAYER_SIZE, ENEMY_SIZE, ENEMY_BULLET_SIZE};
-use crate::structs::Enemy;
+use crate::{Particle, Star, Bullet, BULLET_SIZE, Player, PLAYER_SIZE, ENEMY_SIZE, ENEMY_BULLET_SIZE, POINTS_COLOR};
+use crate::structs::{Enemy, FloatingMessage};
 
 pub fn draw_particles(particles: Vec<Particle>) {
     for particle in particles {
@@ -9,6 +9,24 @@ pub fn draw_particles(particles: Vec<Particle>) {
             particle.pos.y(),
             particle.size,
             particle.color,
+        );
+    }
+}
+
+pub fn draw_messages(messages: Vec<FloatingMessage>, font: Font) {
+    let font_size = 30;
+    for m in messages {
+        let text_size = measure_text(&m.message, Some(font), font_size as _, m.scale);
+        draw_text_ex(
+            &m.message,
+            m.pos.x() - text_size.0 / 2.,
+            m.pos.y(),
+            TextParams {
+                font,
+                font_size,
+                font_scale: m.scale,
+                color: POINTS_COLOR,
+            },
         );
     }
 }
@@ -104,6 +122,23 @@ pub fn draw_player(player: Player, ship_tx: Texture2D) {
             source: None,
             rotation: 0.0,
             pivot: None,
+        },
+    );
+}
+
+pub fn draw_total_points(points: i32, font: Font) {
+    let font_size = 30;
+    let text = std::fmt::format(format_args!("POINTS: {}", points));
+    let text_size = measure_text(&text, Some(font), font_size as _, 1.0);
+    draw_text_ex(
+        &text,
+        20.,
+        screen_height() - text_size.1 - 20.,
+        TextParams {
+            font,
+            font_size,
+            font_scale: 1.0,
+            color: POINTS_COLOR,
         },
     );
 }

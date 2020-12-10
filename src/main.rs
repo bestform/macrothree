@@ -9,13 +9,13 @@ mod structs;
 mod physics;
 
 use macroquad::prelude::*;
-use crate::renderer::{draw_stars, draw_particles, draw_player, draw_bullets, draw_enemies};
-use crate::lifetime::{handle_bullet_lifetime, handle_particles_lifetime, handle_stars_lifetime, handle_enemies_lifetime};
-use crate::generator::{create_engine_particles, create_stars, create_bullets, create_enemies, create_enemy_bullets};
-use crate::movement::{handle_player_movement, handle_bullets_move, handle_particles_move, handle_stars_move, handle_enemies_move};
-use crate::input::{handle_shortcuts, handle_player_input};
+use crate::renderer::*;
+use crate::lifetime::*;
+use crate::generator::*;
+use crate::movement::*;
+use crate::input::*;
 use crate::structs::*;
-use crate::physics::handle_bullets_collision;
+use crate::physics::*;
 
 const DEBUG: bool = true;
 
@@ -34,6 +34,8 @@ const PARTICLE_LIFETIME: f64 = 0.9;
 const ENEMY_FREQ: f64 = 2.;
 const ENEMY_SIZE: f32 = 50.;
 const ENABLE_PARALLAX: bool = false;
+const MESSAGE_LIFETIME: f64 = 1.;
+const POINTS_COLOR: Color = Color::new(0.6, 0.6, 0.9, 1.0);
 
 fn window_conf() -> Conf {
     Conf {
@@ -57,8 +59,13 @@ async fn main() {
     let mut stars: Vec<Star> = Vec::new();
     let mut particles: Vec<Particle> = Vec::new();
     let mut enemies: Vec<Enemy> = Vec::new();
+    let mut points_to_add: Vec<PointsToAdd> = Vec::new();
+    let mut messages: Vec<FloatingMessage> = Vec::new();
     let mut last_particle_t: f64 = get_time();
     let mut last_enemy_t: f64 = get_time();
+    let mut total_points: i32 = 0;
+
+    let font = load_ttf_font("Resources/LASER.ttf").await;
 
     let ship_tx = load_texture("Resources/player_ship.png").await;
     let bullet_tx = load_texture("Resources/bullet.png").await;
@@ -86,24 +93,28 @@ async fn main() {
         handle_enemies_move(&mut enemies);
         handle_bullets_move(&mut bullets, &mut enemy_bullets);
         handle_particles_move(&mut particles);
+        handle_messages_move(&mut messages);
         handle_stars_move(&mut stars, handle_player_input());
 
         handle_bullet_lifetime(&mut bullets, &mut enemy_bullets);
         handle_particles_lifetime(&mut particles, frame_t);
         handle_enemies_lifetime(&mut enemies);
         handle_stars_lifetime(&mut stars);
+        handle_messages_lifetime(&mut messages, frame_t);
 
-        handle_bullets_collision(&mut enemies, &mut bullets, &mut particles);
+        handle_bullets_collision(&mut enemies, &mut bullets, &mut particles, &mut points_to_add);
 
-
+        handle_points_to_add(&mut points_to_add, &mut messages, &mut total_points, frame_t);
 
         // DRAW
         clear_background(BLACK);
         draw_stars(stars.clone());
         draw_particles(particles.clone());
+        draw_messages(messages.clone(), font);
         draw_player(player, ship_tx);
         draw_enemies(enemies.clone(), enemy_ship_textures.clone());
         draw_bullets(bullets.clone(), enemy_bullets.clone(), bullet_tx, enemy_bullet_01_tx);
+        draw_total_points(total_points, font);
         if DEBUG {
             debug::draw_debug(
                 stars.clone(),
@@ -115,6 +126,20 @@ async fn main() {
         }
         next_frame().await
     }
+}
+
+fn handle_points_to_add(points_to_add: &mut Vec<PointsToAdd>, messages: &mut Vec<FloatingMessage>, total_points: &mut i32, frame_t: f64) {
+    for p in points_to_add.iter() {
+        messages.push(FloatingMessage {
+            message: p.amount.to_string(),
+            shown_at: frame_t,
+            pos: p.pos,
+            scale: p.amount as f32 / 100.
+        });
+        *total_points += p.amount;
+    }
+
+    points_to_add.clear();
 }
 
 

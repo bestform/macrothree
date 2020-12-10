@@ -50,3 +50,17 @@ pub struct Player {
     pub(crate) vel: Vec2,
     pub(crate) last_shot: f64,
 }
+
+#[derive(Clone, Copy)]
+pub struct PointsToAdd {
+    pub(crate) amount: i32,
+    pub(crate) pos: Vec2,
+}
+
+#[derive(Clone)]
+pub struct FloatingMessage {
+    pub(crate) message: String,
+    pub(crate) shown_at: f64,
+    pub(crate) pos: Vec2,
+    pub(crate) scale: f32,
+}
