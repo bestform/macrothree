@@ -23,7 +23,6 @@ struct Star {
 struct Bullet {
     pos: Vec2,
     vel: Vec2,
-    shot_at: f64,
     alive: bool,
 }
 
@@ -58,7 +57,7 @@ async fn main() {
         handle_player_movement(&mut player);
         create_boolets(&mut player, &mut bullets, frame_t);
         handle_bullet_move(&mut bullets);
-        handle_bullet_lifetime(&mut bullets, frame_t);
+        handle_bullet_lifetime(&mut bullets);
         create_stars(&mut stars, frame_t);
         handle_stars_move(&mut stars);
         handle_stars_lifetime(&mut stars);
@@ -108,8 +107,8 @@ fn create_stars(stars: &mut Vec<Star>, frame_t: f64) {
     }
 }
 
-fn handle_bullet_lifetime(bullets: &mut Vec<Bullet>, frame_t: f64) {
-    bullets.retain(|bullet| bullet.shot_at + 2.5 > frame_t);
+fn handle_bullet_lifetime(bullets: &mut Vec<Bullet>) {
+    bullets.retain(|bullet| bullet.pos.y() > 0.);
 }
 
 fn handle_bullet_move(bullets: &mut Vec<Bullet>) {
@@ -129,7 +128,6 @@ fn create_boolets(player: &mut Player, bullets: &mut Vec<Bullet>, frame_t: f64) 
         bullets.push(Bullet{
             pos: player.pos,
             vel: Vec2::new(0., BULLET_SPEED),
-            shot_at: frame_t,
             alive: true
         });
         player.last_shot = frame_t;
