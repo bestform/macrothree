@@ -4,13 +4,14 @@ mod math;
 mod lifetime;
 mod generator;
 mod movement;
+mod input;
 
 use macroquad::prelude::*;
-use std::process::exit;
 use crate::renderer::{draw_stars, draw_particles, draw_player, draw_bullets};
 use crate::lifetime::{handle_bullet_lifetime, handle_particles_lifetime, handle_stars_lifetime};
 use crate::generator::{create_particles, create_stars, create_boolets};
 use crate::movement::{handle_player_movement, handle_bullet_move, handle_particles_move, handle_stars_move};
+use crate::input::{handle_shortcuts};
 
 #[derive(Clone, Copy)]
 pub struct Star {
@@ -34,6 +35,14 @@ pub struct Bullet {
     pos: Vec2,
     vel: Vec2,
     alive: bool,
+}
+
+pub enum PlayerMovementState {
+    IDLE,
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN
 }
 
 #[derive(Clone, Copy)]
@@ -105,11 +114,7 @@ async fn main() {
 }
 
 
-fn handle_shortcuts() {
-    if is_key_down(KeyCode::Q) {
-        exit(0);
-    }
-}
+
 
 
 
