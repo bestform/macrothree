@@ -1,4 +1,7 @@
+mod debug;
+
 use macroquad::prelude::*;
+use std::process::exit;
 
 enum PebbleColor {
     Red,
@@ -12,7 +15,7 @@ struct Pepple {
 }
 
 #[derive(Clone, Copy)]
-struct Star {
+pub struct Star {
     pos: Vec2,
     vel: Vec2,
     size: f32,
@@ -20,7 +23,7 @@ struct Star {
 }
 
 #[derive(Clone)]
-struct Bullet {
+pub struct Bullet {
     pos: Vec2,
     vel: Vec2,
     alive: bool,
@@ -33,6 +36,7 @@ struct Player {
     last_shot: f64
 }
 
+const DEBUG:bool = true;
 const PLAYER_WIDTH:f32 = 50.;
 const PLAYER_HEIGHT:f32 = 30.;
 const PLAYER_SPEED: f32 = 4.;
@@ -55,6 +59,7 @@ async fn main() {
         let frame_t = get_time();
         // MOVE PLAYER
         handle_player_movement(&mut player);
+        handle_shortcuts();
         create_boolets(&mut player, &mut bullets, frame_t);
         handle_bullet_move(&mut bullets);
         handle_bullet_lifetime(&mut bullets);
@@ -68,7 +73,16 @@ async fn main() {
         draw_stars(stars.clone());
         draw_player(player);
         draw_bullets(bullets.clone());
+        if DEBUG {
+            debug::draw_debug(stars.clone(), bullets.clone());
+        }
         next_frame().await
+    }
+}
+
+fn handle_shortcuts() {
+    if is_key_down(KeyCode::Q) {
+        exit(0);
     }
 }
 
