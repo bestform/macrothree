@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 use crate::{Particle, Star, Bullet, Player, PLAYER_SPEED, TOP_MARGIN, BOTTOM_MARGIN, PLAYER_SIZE, PlayerMovementState};
 use crate::math::{clampx, clampy};
 use crate::input::handle_player_input;
+use crate::structs::Enemy;
 
 pub fn handle_particles_move(particles: &mut Vec<Particle>) {
     for particle in particles {
@@ -15,9 +16,19 @@ pub fn handle_stars_move(stars: &mut Vec<Star>) {
     }
 }
 
-pub fn handle_bullet_move(bullets: &mut Vec<Bullet>) {
+pub fn handle_enemies_move(enemies: &mut Vec<Enemy>) {
+    for enemy in enemies {
+        enemy.pos += enemy.vel;
+    }
+}
+
+pub fn handle_bullets_move(bullets: &mut Vec<Bullet>, enemy_bullets: &mut Vec<Bullet>) {
     for bullet in bullets {
         bullet.pos += bullet.vel;
+    }
+    for bullet in enemy_bullets {
+        bullet.pos += bullet.vel;
+        bullet.rot += 0.1;
     }
 }
 

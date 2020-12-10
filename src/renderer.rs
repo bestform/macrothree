@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
-use crate::{Particle, Star, Bullet, BULLET_SIZE, Player, PLAYER_SIZE};
+use crate::{Particle, Star, Bullet, BULLET_SIZE, Player, PLAYER_SIZE, ENEMY_SIZE, ENEMY_BULLET_SIZE};
+use crate::structs::Enemy;
 
 pub fn draw_particles(particles: Vec<Particle>) {
     for particle in particles {
@@ -12,6 +13,7 @@ pub fn draw_particles(particles: Vec<Particle>) {
     }
 }
 
+// todo: brighter stars should move with the player position (parallax)
 pub fn draw_stars(stars: Vec<Star>) {
     for star in stars {
         let color = Color::new(1.00 * star.brightness, 1.00 * star.brightness, 1.00 * star.brightness, 1.00 * star.brightness);
@@ -24,7 +26,25 @@ pub fn draw_stars(stars: Vec<Star>) {
     }
 }
 
-pub fn draw_bullets(bullets: Vec<Bullet>, bullet_tx: Texture2D) {
+pub fn draw_enemies(enemies: Vec<Enemy>, textures: Vec<Texture2D>) {
+    for enemy in enemies {
+        let texture = textures.get(enemy.tex_idx).unwrap();
+        draw_texture_ex(
+            *texture,
+            enemy.pos.x() - ENEMY_SIZE / 2.,
+            enemy.pos.y(),
+            WHITE,
+            DrawTextureParams{
+                dest_size: Some(Vec2::new(ENEMY_SIZE, ENEMY_SIZE)),
+                source: None,
+                rotation: 0.0,
+                pivot: None
+            }
+        );
+    }
+}
+
+pub fn draw_bullets(bullets: Vec<Bullet>, enemy_bullets: Vec<Bullet>, bullet_tx: Texture2D, enemy_bullet_tx: Texture2D) {
     for bullet in bullets {
         draw_texture_ex(
             bullet_tx,
@@ -38,6 +58,20 @@ pub fn draw_bullets(bullets: Vec<Bullet>, bullet_tx: Texture2D) {
                 pivot: None,
             },
         )
+    }
+    for bullet in enemy_bullets{
+        draw_texture_ex(
+            enemy_bullet_tx,
+            bullet.pos.x() - ENEMY_BULLET_SIZE / 2.,
+            bullet.pos.y(),
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(Vec2::new(ENEMY_BULLET_SIZE, ENEMY_BULLET_SIZE)),
+                source: None,
+                rotation: bullet.rot,
+                pivot: Some(bullet.pos + Vec2::new(0., ENEMY_BULLET_SIZE / 2.)),
+            },
+        );
     }
 }
 
