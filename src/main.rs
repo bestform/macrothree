@@ -40,10 +40,10 @@ pub struct Bullet {
 pub struct Player {
     pos: Vec2,
     vel: Vec2,
-    last_shot: f64
+    last_shot: f64,
 }
 
-const DEBUG:bool = true;
+const DEBUG: bool = true;
 
 const PLAYER_SPEED: f32 = 4.;
 const BOTTOM_MARGIN: f32 = 20.;
@@ -57,16 +57,15 @@ const PARTICLE_LIFETIME: f64 = 0.9;
 
 #[macroquad::main("MacroThree")]
 async fn main() {
-
     let mut player = Player {
         pos: Vec2::new(screen_width() / 2., screen_height() - PLAYER_SIZE - BOTTOM_MARGIN),
         vel: Vec2::new(0., 0.),
-        last_shot: get_time()
+        last_shot: get_time(),
     };
 
-    let mut bullets:Vec<Bullet> = Vec::new();
-    let mut stars:Vec<Star> = Vec::new();
-    let mut particles:Vec<Particle> = Vec::new();
+    let mut bullets: Vec<Bullet> = Vec::new();
+    let mut stars: Vec<Star> = Vec::new();
+    let mut particles: Vec<Particle> = Vec::new();
     let mut last_particle_t: f64 = get_time();
 
     let ship_tx = load_texture("Resources/player_ship.png").await;
@@ -104,9 +103,6 @@ async fn main() {
         next_frame().await
     }
 }
-
-
-
 
 
 fn handle_shortcuts() {
