@@ -5,11 +5,12 @@ use crate::structs::Enemy;
 pub fn create_stars(stars: &mut Vec<Star>, frame_t: f64) {
     //println!("{}", frame_t);
     if frame_t % 1. < STAR_DENSITY {
+        let distance = rand::gen_range(0.1, 1.);
         stars.push(Star {
             pos: Vec2::new(rand::gen_range(0., screen_width()), rand::gen_range(-20., 0.)),
-            vel: Vec2::new(0., rand::gen_range(2., 2.5)),
+            vel: Vec2::new(0., 2.5 * distance),
             size: rand::gen_range(1., 2.),
-            brightness: rand::gen_range(0.1, 1.),
+            brightness: distance,
         })
     }
 }

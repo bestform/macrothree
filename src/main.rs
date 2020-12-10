@@ -13,7 +13,7 @@ use crate::renderer::{draw_stars, draw_particles, draw_player, draw_bullets, dra
 use crate::lifetime::{handle_bullet_lifetime, handle_particles_lifetime, handle_stars_lifetime, handle_enemies_lifetime};
 use crate::generator::{create_engine_particles, create_stars, create_bullets, create_enemies, create_enemy_bullets};
 use crate::movement::{handle_player_movement, handle_bullets_move, handle_particles_move, handle_stars_move, handle_enemies_move};
-use crate::input::{handle_shortcuts};
+use crate::input::{handle_shortcuts, handle_player_input};
 use crate::structs::Enemy;
 use crate::physics::handle_bullets_collision;
 
@@ -67,7 +67,7 @@ const BULLET_SPEED: f32 = -9.;
 const ENEMY_BULLET_SPEED: f32 = 6.;
 const BULLET_SIZE: f32 = 7.;
 const ENEMY_BULLET_SIZE: f32 = 22.;
-const STAR_DENSITY: f64 = 0.5;
+const STAR_DENSITY: f64 = 0.2;
 const PARTICLE_DENSITY: f64 = 0.02;
 const PARTICLE_LIFETIME: f64 = 0.9;
 const ENEMY_FREQ: f64 = 2.;
@@ -103,7 +103,7 @@ async fn main() {
         let frame_t = get_time();
 
         // MOVE PLAYER
-        handle_player_movement(&mut player);
+        handle_player_movement(&mut player, handle_player_input());
         handle_shortcuts();
 
         create_bullets(&mut player, &mut bullets, frame_t);
@@ -115,7 +115,7 @@ async fn main() {
         handle_enemies_move(&mut enemies);
         handle_bullets_move(&mut bullets, &mut enemy_bullets);
         handle_particles_move(&mut particles);
-        handle_stars_move(&mut stars);
+        handle_stars_move(&mut stars, handle_player_input());
 
         handle_bullet_lifetime(&mut bullets, &mut enemy_bullets);
         handle_particles_lifetime(&mut particles, frame_t);
