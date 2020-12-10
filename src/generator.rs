@@ -1,4 +1,4 @@
-use crate::{Star, STAR_DENSITY, Particle, Player, PARTICLE_DENSITY, PLAYER_SIZE, Bullet, BULLET_SPEED, ENEMY_FREQ, ENEMY_SIZE, ENEMY_BULLET_SPEED};
+use crate::{Star, STAR_DENSITY, Particle, Player, PARTICLE_DENSITY, PLAYER_SIZE, Bullet, BULLET_SPEED, ENEMY_FREQ, ENEMY_SIZE, ENEMY_BULLET_SPEED, SIDE_MARGIN};
 use macroquad::prelude::*;
 use crate::structs::Enemy;
 
@@ -64,7 +64,7 @@ pub fn create_enemy_bullets(enemies: &mut Vec<Enemy>, enemy_bullets: &mut Vec<Bu
 pub fn create_enemies(enemies: &mut Vec<Enemy>, frame_t: f64, last_enemy_t: &mut f64) {
     if frame_t - *last_enemy_t > ENEMY_FREQ {
         enemies.push(Enemy {
-            pos: Vec2::new(rand::gen_range(0., screen_width()), -ENEMY_SIZE),
+            pos: Vec2::new(rand::gen_range(SIDE_MARGIN, screen_width() - SIDE_MARGIN), -ENEMY_SIZE),
             vel: Vec2::new(0., rand::gen_range(2., 4.)),
             hitpoints: 5,
             tex_idx: rand::gen_range::<usize>(0, 4),

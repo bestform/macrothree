@@ -14,54 +14,15 @@ use crate::lifetime::{handle_bullet_lifetime, handle_particles_lifetime, handle_
 use crate::generator::{create_engine_particles, create_stars, create_bullets, create_enemies, create_enemy_bullets};
 use crate::movement::{handle_player_movement, handle_bullets_move, handle_particles_move, handle_stars_move, handle_enemies_move};
 use crate::input::{handle_shortcuts, handle_player_input};
-use crate::structs::Enemy;
+use crate::structs::*;
 use crate::physics::handle_bullets_collision;
-
-#[derive(Clone, Copy)]
-pub struct Star {
-    pos: Vec2,
-    vel: Vec2,
-    size: f32,
-    brightness: f32,
-}
-
-#[derive(Clone)]
-pub struct Particle {
-    pos: Vec2,
-    vel: Vec2,
-    size: f32,
-    color: Color,
-    created_at: f64,
-}
-
-#[derive(Clone)]
-pub struct Bullet {
-    pos: Vec2,
-    vel: Vec2,
-    alive: bool,
-    rot: f32,
-}
-
-pub enum PlayerMovementState {
-    IDLE,
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN
-}
-
-#[derive(Clone, Copy)]
-pub struct Player {
-    pos: Vec2,
-    vel: Vec2,
-    last_shot: f64,
-}
 
 const DEBUG: bool = true;
 
-const PLAYER_SPEED: f32 = 4.;
+const PLAYER_SPEED: f32 = 7.;
 const BOTTOM_MARGIN: f32 = 20.;
 const TOP_MARGIN: f32 = 200.;
+const SIDE_MARGIN: f32 = 200.;
 const PLAYER_SIZE: f32 = 100.;
 const BULLET_SPEED: f32 = -9.;
 const ENEMY_BULLET_SPEED: f32 = 6.;
@@ -72,9 +33,19 @@ const PARTICLE_DENSITY: f64 = 0.02;
 const PARTICLE_LIFETIME: f64 = 0.9;
 const ENEMY_FREQ: f64 = 2.;
 const ENEMY_SIZE: f32 = 50.;
+const ENABLE_PARALLAX: bool = false;
 
-#[macroquad::main("MacroThree")]
+fn window_conf() -> Conf {
+    Conf {
+        window_title: "MacroThree".to_owned(),
+        fullscreen: true,
+        ..Default::default()
+    }
+}
+
+#[macroquad::main(window_conf)]
 async fn main() {
+
     let mut player = Player {
         pos: Vec2::new(screen_width() / 2., screen_height() - PLAYER_SIZE - BOTTOM_MARGIN),
         vel: Vec2::new(0., 0.),

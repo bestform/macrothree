@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use crate::{Particle, Star, Bullet, Player, PLAYER_SPEED, TOP_MARGIN, BOTTOM_MARGIN, PLAYER_SIZE, PlayerMovementState};
+use crate::{Particle, Star, Bullet, Player, PLAYER_SPEED, TOP_MARGIN, BOTTOM_MARGIN, PLAYER_SIZE, PlayerMovementState, ENABLE_PARALLAX};
 use crate::math::{clampx, clampy};
 use crate::structs::Enemy;
 
@@ -26,8 +26,9 @@ pub fn handle_stars_move(stars: &mut Vec<Star>, player_movement_states: Vec<Play
     }
     for star in stars {
         star.pos += star.vel;
-        star.pos.set_x(star.pos.x() + star.brightness * parallax)
-
+        if ENABLE_PARALLAX {
+            star.pos.set_x(star.pos.x() + star.brightness * parallax)
+        }
     }
 
 }
