@@ -1,18 +1,16 @@
 mod debug;
+mod renderer;
+mod math;
+mod lifetime;
+mod generator;
+mod movement;
 
 use macroquad::prelude::*;
 use std::process::exit;
-
-enum PebbleColor {
-    Red,
-    Blue,
-    Green,
-}
-
-struct Pepple {
-    pos: Vec2,
-    color: PebbleColor
-}
+use crate::renderer::{draw_stars, draw_particles, draw_player, draw_bullets};
+use crate::lifetime::{handle_bullet_lifetime, handle_particles_lifetime, handle_stars_lifetime};
+use crate::generator::{create_particles, create_stars, create_boolets};
+use crate::movement::{handle_player_movement, handle_bullet_move, handle_particles_move, handle_stars_move};
 
 #[derive(Clone, Copy)]
 pub struct Star {
@@ -39,7 +37,7 @@ pub struct Bullet {
 }
 
 #[derive(Clone, Copy)]
-struct Player {
+pub struct Player {
     pos: Vec2,
     vel: Vec2,
     last_shot: f64
@@ -107,22 +105,9 @@ async fn main() {
     }
 }
 
-fn draw_particles(particles: Vec<Particle>) {
-    for particle in particles {
-        draw_circle(
-            particle.pos.x(),
-            particle.pos.y(),
-            particle.size,
-            particle.color
-        );
-    }
-}
 
-fn handle_particles_move(particles: &mut Vec<Particle>) {
-    for particle in particles {
-        particle.pos += particle.vel;
-    }
-}
+
+
 
 fn handle_shortcuts() {
     if is_key_down(KeyCode::Q) {
@@ -130,162 +115,20 @@ fn handle_shortcuts() {
     }
 }
 
-fn handle_stars_lifetime(stars: &mut Vec<Star>) {
-    stars.retain(|s| s.pos.y() < screen_height());
-}
 
-fn draw_stars(stars: Vec<Star>) {
-    for star in stars{
-        let color = Color::new(1.00 * star.brightness, 1.00 * star.brightness, 1.00 * star.brightness, 1.00 * star.brightness);
-        draw_circle(
-            star.pos.x(),
-            star.pos.y(),
-            star.size,
-            color
-        );
-    }
 
-}
 
-fn handle_stars_move(stars: &mut Vec<Star>) {
-    for star in stars {
-        star.pos += star.vel;
-    }
-}
 
-fn create_stars(stars: &mut Vec<Star>, frame_t: f64) {
-    //println!("{}", frame_t);
-    if frame_t % 1. < STAR_DENSITY {
-        stars.push(Star{
-            pos: Vec2::new(rand::gen_range(0., screen_width()), rand::gen_range(-20., 0.)),
-            vel: Vec2::new(0., rand::gen_range(2., 2.5)),
-            size: rand::gen_range(1., 2.),
-            brightness: rand::gen_range(0.1, 1.)
-        })
-    }
-}
 
-fn create_particles(player: Player, particles: &mut Vec<Particle>, frame_t: f64, last_particle_t: &mut f64) {
-    if frame_t - *last_particle_t > PARTICLE_DENSITY {
-        particles.push(Particle {
-            pos: player.pos + Vec2::new(0.0, PLAYER_SIZE),
-            vel: Vec2::new(rand::gen_range(-0.8, 0.8), rand::gen_range(3., 4.5)),
-            size: rand::gen_range(1.0, 2.0),
-            color: YELLOW,
-            created_at: frame_t
-        });
-        *last_particle_t = frame_t;
-    }
-}
 
-fn handle_bullet_lifetime(bullets: &mut Vec<Bullet>) {
-    bullets.retain(|bullet| bullet.pos.y() > 0.);
-}
 
-fn handle_particles_lifetime(particles: &mut Vec<Particle>, frame_t: f64) {
-    particles.retain(|particle| particle.pos.y() < screen_height() && frame_t - particle.created_at < PARTICLE_LIFETIME);
-}
 
-fn handle_bullet_move(bullets: &mut Vec<Bullet>) {
-    for bullet in bullets {
-        bullet.pos += bullet.vel;
-    }
-}
 
-fn draw_bullets(bullets: Vec<Bullet>, bullet_tx: Texture2D) {
-    for bullet in bullets {
-        draw_texture_ex(
-            bullet_tx,
-            bullet.pos.x() - BULLET_SIZE / 2.,
-            bullet.pos.y(),
-            WHITE,
-            DrawTextureParams{
-                dest_size: Some(Vec2::new(BULLET_SIZE, BULLET_SIZE)),
-                source: None,
-                rotation: 0.0,
-                pivot: None
-            }
-        )
-    }
-}
 
-fn create_boolets(player: &mut Player, bullets: &mut Vec<Bullet>, frame_t: f64) {
-    if is_key_down(KeyCode::Space) && frame_t - player.last_shot > 0.1 {
-        bullets.push(Bullet{
-            pos: player.pos + Vec2::new(0., 5.),
-            vel: Vec2::new(0., BULLET_SPEED),
-            alive: true
-        });
-        player.last_shot = frame_t;
-    }
-}
 
-fn handle_player_movement(player: &mut Player) {
-    player.vel = Vec2::new(0., 0.);
 
-    if !(is_key_down(KeyCode::A) && is_key_down(KeyCode::D)) {
-        if is_key_down(KeyCode::A) {
-            player.vel.set_x(-1. * PLAYER_SPEED);
-        }
-        if is_key_down(KeyCode::D) {
-            player.vel.set_x(PLAYER_SPEED);
-        }
-    }
-    if !(is_key_down(KeyCode::W) && is_key_down(KeyCode::S)) {
-        if is_key_down(KeyCode::W) {
-            player.vel.set_y(-1. * PLAYER_SPEED);
-        }
-        if is_key_down(KeyCode::S) {
-            player.vel.set_y(PLAYER_SPEED);
-        }
-    }
 
-    if player.vel.length() == 0. {
-        return;
-    }
 
-    player.vel = player.vel.normalize() * PLAYER_SPEED;
-    player.pos += player.vel;
-    player.pos = clampx(player.pos, 0., screen_width());
-    player.pos = clampy(player.pos, TOP_MARGIN, screen_height() - PLAYER_SIZE - BOTTOM_MARGIN);
-}
 
-fn clampx(pos: Vec2, min: f32, max: f32) -> Vec2 {
-    let mut new_pos = pos.clone();
-    if pos.x() < min {
-        new_pos.set_x(min);
-    }
-    if pos.x() > max {
-        new_pos.set_x(max);
-    }
 
-    return new_pos;
-}
-
-fn clampy(pos: Vec2, min: f32, max: f32) -> Vec2 {
-    let mut new_pos = pos.clone();
-    if pos.y() < min {
-        new_pos.set_y(min);
-    }
-    if pos.y() > max {
-        new_pos.set_y(max);
-    }
-
-    return new_pos;
-}
-
-fn draw_player(player: Player, ship_tx: Texture2D) {
-    draw_texture_ex(
-        ship_tx,
-        player.pos.x() - PLAYER_SIZE / 2.,
-        player.pos.y(),
-        WHITE,
-        DrawTextureParams {
-            dest_size: Some(Vec2::new(PLAYER_SIZE, PLAYER_SIZE)),
-            source: None,
-            rotation: 0.0,
-            pivot: None
-        }
-    );
-}
 
