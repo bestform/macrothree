@@ -41,6 +41,24 @@ pub fn draw_enemies(enemies: Vec<Enemy>, textures: Vec<Texture2D>) {
                 pivot: None
             }
         );
+        let health_percent:f32 = enemy.hitpoints as f32 / 5.0;
+        let bar_width = 70.;
+        let bar_height = 10.;
+        let bar_border = 2.;
+        draw_rectangle(
+            enemy.pos.x() - bar_width / 2.,
+            enemy.pos.y() - ENEMY_SIZE / 2.,
+            bar_width,
+            bar_height,
+            DARKGRAY
+        );
+        draw_rectangle(
+            enemy.pos.x() - bar_width / 2. + bar_border,
+            enemy.pos.y() - ENEMY_SIZE / 2. + bar_border,
+            bar_width * health_percent - bar_border * 2.,
+            bar_height - bar_border * 2.,
+            RED
+        );
     }
 }
 
