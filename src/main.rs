@@ -23,6 +23,15 @@ pub struct Star {
 }
 
 #[derive(Clone)]
+pub struct Particle {
+    pos: Vec2,
+    vel: Vec2,
+    size: f32,
+    color: Color,
+    created_at: f64,
+}
+
+#[derive(Clone)]
 pub struct Bullet {
     pos: Vec2,
     vel: Vec2,
@@ -45,6 +54,9 @@ const PLAYER_SIZE: f32 = 100.;
 const BULLET_SPEED: f32 = -9.;
 const BULLET_SIZE: f32 = 7.;
 const STAR_DENSITY: f64 = 0.5;
+const PARTICLE_DENSITY: f64 = 0.02;
+const PARTICLE_LIFETIME: f64 = 0.9;
+
 #[macroquad::main("MacroThree")]
 async fn main() {
 
@@ -56,18 +68,27 @@ async fn main() {
 
     let mut bullets:Vec<Bullet> = Vec::new();
     let mut stars:Vec<Star> = Vec::new();
+    let mut particles:Vec<Particle> = Vec::new();
+    let mut last_particle_t: f64 = get_time();
 
     let ship_tx = load_texture("Resources/player_ship.png").await;
     let bullet_tx = load_texture("Resources/bullet.png").await;
 
     loop {
         let frame_t = get_time();
+
         // MOVE PLAYER
         handle_player_movement(&mut player);
         handle_shortcuts();
+
         create_boolets(&mut player, &mut bullets, frame_t);
         handle_bullet_move(&mut bullets);
         handle_bullet_lifetime(&mut bullets);
+
+        create_particles(player, &mut particles, frame_t, &mut last_particle_t);
+        handle_particles_move(&mut particles);
+        handle_particles_lifetime(&mut particles, frame_t);
+
         create_stars(&mut stars, frame_t);
         handle_stars_move(&mut stars);
         handle_stars_lifetime(&mut stars);
@@ -76,12 +97,30 @@ async fn main() {
         // DRAW
         clear_background(BLACK);
         draw_stars(stars.clone());
+        draw_particles(particles.clone());
         draw_player(player, ship_tx);
         draw_bullets(bullets.clone(), bullet_tx);
         if DEBUG {
-            debug::draw_debug(stars.clone(), bullets.clone());
+            debug::draw_debug(stars.clone(), bullets.clone(), particles.clone());
         }
         next_frame().await
+    }
+}
+
+fn draw_particles(particles: Vec<Particle>) {
+    for particle in particles {
+        draw_circle(
+            particle.pos.x(),
+            particle.pos.y(),
+            particle.size,
+            particle.color
+        );
+    }
+}
+
+fn handle_particles_move(particles: &mut Vec<Particle>) {
+    for particle in particles {
+        particle.pos += particle.vel;
     }
 }
 
@@ -126,8 +165,25 @@ fn create_stars(stars: &mut Vec<Star>, frame_t: f64) {
     }
 }
 
+fn create_particles(player: Player, particles: &mut Vec<Particle>, frame_t: f64, last_particle_t: &mut f64) {
+    if frame_t - *last_particle_t > PARTICLE_DENSITY {
+        particles.push(Particle {
+            pos: player.pos + Vec2::new(0.0, PLAYER_SIZE),
+            vel: Vec2::new(rand::gen_range(-0.8, 0.8), rand::gen_range(3., 4.5)),
+            size: rand::gen_range(1.0, 2.0),
+            color: YELLOW,
+            created_at: frame_t
+        });
+        *last_particle_t = frame_t;
+    }
+}
+
 fn handle_bullet_lifetime(bullets: &mut Vec<Bullet>) {
     bullets.retain(|bullet| bullet.pos.y() > 0.);
+}
+
+fn handle_particles_lifetime(particles: &mut Vec<Particle>, frame_t: f64) {
+    particles.retain(|particle| particle.pos.y() < screen_height() && frame_t - particle.created_at < PARTICLE_LIFETIME);
 }
 
 fn handle_bullet_move(bullets: &mut Vec<Bullet>) {
