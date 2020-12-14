@@ -1,12 +1,15 @@
 use crate::structs::{Enemy, PointsToAdd};
 use crate::{Bullet, ENEMY_SIZE, Particle};
 use macroquad::prelude::*;
+use crate::audio::Audio;
+use crate::audio::SFX::EXPLOSION;
 
 pub fn handle_bullets_collision(
     enemies: &mut Vec<Enemy>,
     bullets: &mut Vec<Bullet>,
     particles: &mut Vec<Particle>,
-    points_to_add: &mut Vec<PointsToAdd>
+    points_to_add: &mut Vec<PointsToAdd>,
+    audio: &mut Audio
 ) {
     for bullet in bullets.iter_mut() {
         for enemy in enemies.iter_mut() {
@@ -17,6 +20,7 @@ pub fn handle_bullets_collision(
                 // todo: this logic should not be in here. But well..
                 if enemy.hitpoints == 0 {
                     points_to_add.push(PointsToAdd{ amount: 100, pos: enemy.pos });
+                    audio.play_sfx(EXPLOSION);
                 } else {
                     points_to_add.push(PointsToAdd{ amount: 60, pos: enemy.pos });
                 }

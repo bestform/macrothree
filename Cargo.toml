@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 macroquad = "0.3.0-alpha.12"
+rodio = "0.13.0"

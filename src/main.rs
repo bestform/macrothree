@@ -7,6 +7,7 @@ mod movement;
 mod input;
 mod structs;
 mod physics;
+mod audio;
 
 use macroquad::prelude::*;
 use crate::renderer::*;
@@ -16,6 +17,7 @@ use crate::movement::*;
 use crate::input::*;
 use crate::structs::*;
 use crate::physics::*;
+use crate::audio::{Audio};
 
 const DEBUG: bool = true;
 
@@ -47,6 +49,9 @@ fn window_conf() -> Conf {
 
 #[macroquad::main(window_conf)]
 async fn main() {
+
+    let mut audio = Audio::new();
+    audio.play_background_music();
 
     let mut player = Player {
         pos: Vec2::new(screen_width() / 2., screen_height() - PLAYER_SIZE - BOTTOM_MARGIN),
@@ -84,7 +89,7 @@ async fn main() {
         handle_player_movement(&mut player, handle_player_input());
         handle_shortcuts();
 
-        create_bullets(&mut player, &mut bullets, frame_t);
+        create_bullets(&mut player, &mut bullets, &mut audio, frame_t);
         create_enemies(&mut enemies, frame_t, &mut last_enemy_t);
         create_engine_particles(player, &mut particles, frame_t, &mut last_particle_t);
         create_enemy_bullets(&mut enemies, &mut enemy_bullets, frame_t);
@@ -102,7 +107,7 @@ async fn main() {
         handle_stars_lifetime(&mut stars);
         handle_messages_lifetime(&mut messages, frame_t);
 
-        handle_bullets_collision(&mut enemies, &mut bullets, &mut particles, &mut points_to_add);
+        handle_bullets_collision(&mut enemies, &mut bullets, &mut particles, &mut points_to_add, &mut audio);
 
         handle_points_to_add(&mut points_to_add, &mut messages, &mut total_points, frame_t);
 
@@ -141,24 +146,3 @@ fn handle_points_to_add(points_to_add: &mut Vec<PointsToAdd>, messages: &mut Vec
 
     points_to_add.clear();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

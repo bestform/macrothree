@@ -1,6 +1,8 @@
 use crate::{Star, STAR_DENSITY, Particle, Player, PARTICLE_DENSITY, PLAYER_SIZE, Bullet, BULLET_SPEED, ENEMY_FREQ, ENEMY_SIZE, ENEMY_BULLET_SPEED, SIDE_MARGIN};
 use macroquad::prelude::*;
 use crate::structs::Enemy;
+use crate::audio::Audio;
+use crate::audio::SFX::SHOOT;
 
 pub fn create_stars(stars: &mut Vec<Star>, frame_t: f64) {
     //println!("{}", frame_t);
@@ -35,7 +37,7 @@ pub fn create_engine_particles(player: Player, particles: &mut Vec<Particle>, fr
     }
 }
 
-pub fn create_bullets(player: &mut Player, bullets: &mut Vec<Bullet>, frame_t: f64) {
+pub fn create_bullets(player: &mut Player, bullets: &mut Vec<Bullet>, audio: &mut Audio, frame_t: f64) {
     if is_key_down(KeyCode::Space) && frame_t - player.last_shot > 0.1 {
         bullets.push(Bullet {
             pos: player.pos + Vec2::new(0., 5.),
@@ -43,6 +45,8 @@ pub fn create_bullets(player: &mut Player, bullets: &mut Vec<Bullet>, frame_t: f
             alive: true,
             rot: 0.
         });
+        // todo: this is NOT the place to trigger this. This is just here to test things.
+        audio.play_sfx(SHOOT);
         player.last_shot = frame_t;
     }
 }
