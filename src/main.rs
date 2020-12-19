@@ -9,11 +9,14 @@ mod structs;
 mod physics;
 mod audio;
 mod game;
+mod state;
 
 use macroquad::prelude::*;
 use crate::structs::*;
 use crate::audio::{Audio};
 use crate::game::Game;
+use crate::state::{GameState, RunState};
+use std::process::exit;
 
 const DEBUG: bool = true;
 
@@ -48,18 +51,26 @@ async fn main() {
     let mut audio = Audio::new();
     audio.play_background_music();
 
+    let mut state = GameState::Playing;
+
     let mut game = Game::new().await;
 
     loop {
         let frame_t = get_time();
 
-        game.handle_player_move_for_frame();
-        game.handle_create_for_frame(&mut audio, frame_t);
-        game.handle_movement_for_frame();
-        game.handle_lifetimes_for_frame(frame_t);
-        game.handle_collisions(&mut audio);
-        game.handle_points(frame_t);
-        game.draw();
+        match state {
+            GameState::Menu => {}
+            GameState::Playing => {
+                state = game.run(frame_t, &mut audio);
+            }
+            GameState::GameOver => {
+                exit(0);
+            }
+        }
+
+
+
+
 
         next_frame().await
     }

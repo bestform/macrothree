@@ -1,12 +1,14 @@
 use macroquad::prelude::*;
-use std::process::exit;
 use crate::{PlayerMovementState};
 use crate::PlayerMovementState::{LEFT, RIGHT, UP, DOWN, IDLE};
+use crate::state::GameState;
 
-pub fn handle_shortcuts() {
+pub fn handle_shortcuts() -> GameState {
     if is_key_down(KeyCode::Q) {
-        exit(0);
+        return GameState::GameOver;
     }
+
+    return GameState::Playing;
 }
 
 pub fn handle_player_input() -> Vec<PlayerMovementState> {
