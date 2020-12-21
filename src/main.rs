@@ -10,6 +10,7 @@ mod physics;
 mod audio;
 mod game;
 mod state;
+mod menu;
 
 use macroquad::prelude::*;
 use crate::structs::*;
@@ -17,6 +18,7 @@ use crate::audio::{Audio};
 use crate::game::Game;
 use crate::state::{GameState, RunState};
 use std::process::exit;
+use crate::menu::Menu;
 
 const DEBUG: bool = true;
 
@@ -36,6 +38,7 @@ const ENEMY_FREQ: f64 = 2.;
 const ENEMY_SIZE: f32 = 50.;
 const MESSAGE_LIFETIME: f64 = 1.;
 const POINTS_COLOR: Color = Color::new(0.6, 0.6, 0.9, 1.0);
+const MENU_COLOR: Color = Color::new(0.6, 0.6, 0.9, 1.0);
 
 fn window_conf() -> Conf {
     Conf {
@@ -51,15 +54,18 @@ async fn main() {
     let mut audio = Audio::new();
     audio.play_background_music();
 
-    let mut state = GameState::Playing;
+    let mut state = GameState::Menu;
 
+    let mut menu = Menu::new().await;
     let mut game = Game::new().await;
 
     loop {
         let frame_t = get_time();
 
         match state {
-            GameState::Menu => {}
+            GameState::Menu => {
+                state = menu.run(frame_t, &mut audio);
+            }
             GameState::Playing => {
                 state = game.run(frame_t, &mut audio);
             }

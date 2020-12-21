@@ -2,13 +2,14 @@ use macroquad::prelude::*;
 use crate::{PlayerMovementState};
 use crate::PlayerMovementState::{LEFT, RIGHT, UP, DOWN, IDLE};
 use crate::state::GameState;
+use crate::menu::Menu;
 
-pub fn handle_shortcuts() -> GameState {
+pub fn handle_global_shortcuts(current_state: GameState) -> GameState {
     if is_key_down(KeyCode::Q) {
         return GameState::GameOver;
     }
 
-    return GameState::Playing;
+    return current_state;
 }
 
 pub fn handle_player_input() -> Vec<PlayerMovementState> {
@@ -37,4 +38,21 @@ pub fn handle_player_input() -> Vec<PlayerMovementState> {
     }
 
     player_movement_states
+}
+
+impl Menu {
+    pub fn handle_click(&self, current_state: GameState) -> GameState {
+        if is_mouse_button_down(MouseButton::Left) {
+            let (x, y) = mouse_position();
+            for menu_item in self.items.iter() {
+                let dim = menu_item.dimensions();
+
+                if x > dim.0 && x < dim.2 && y > dim.1 && y < dim.3 {
+                    return GameState::Playing; // todo: match on item to determine action
+                }
+            }
+        }
+
+        current_state
+    }
 }

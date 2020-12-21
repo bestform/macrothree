@@ -1,10 +1,9 @@
 use macroquad::prelude::*;
 
 use crate::{BOTTOM_MARGIN, PLAYER_SIZE, PLAYER_SPEED, TOP_MARGIN};
-use crate::input::{handle_player_input, handle_shortcuts};
+use crate::input::{handle_player_input};
 use crate::math::{clampx, clampy};
 use crate::structs::{Bullet, Enemy, FloatingMessage, Particle, Player, PlayerMovementState, PointsToAdd, Star};
-use crate::state::GameState;
 
 pub struct Game {
     pub(crate) player: Player,
@@ -81,9 +80,8 @@ impl Game {
         }
     }
 
-    pub fn handle_player_move_for_frame(&mut self) -> GameState {
+    pub fn handle_player_move_for_frame(&mut self) {
         self.handle_player_movement();
-        return handle_shortcuts();
     }
 
     pub fn handle_points(&mut self, frame_t: f64) {
