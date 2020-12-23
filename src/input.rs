@@ -8,6 +8,9 @@ pub fn handle_global_shortcuts(current_state: GameState) -> GameState {
     if is_key_down(KeyCode::Q) {
         return GameState::GameOver;
     }
+    if is_key_down(KeyCode::Escape) {
+        return GameState::Menu;
+    }
 
     return current_state;
 }
@@ -48,11 +51,29 @@ impl Menu {
                 let dim = menu_item.dimensions();
 
                 if x > dim.0 && x < dim.2 && y > dim.1 && y < dim.3 {
-                    return GameState::Playing; // todo: match on item to determine action
+                    let new_gamestate = match menu_item.id {
+                        0 => GameState::Playing,
+                        2 => GameState::GameOver,
+                        _ => current_state
+                    };
+
+                    return new_gamestate;
                 }
             }
         }
 
         current_state
+    }
+
+    pub fn handle_mouse_hover(&mut self) {
+        let (x, y) = mouse_position();
+        for menu_item in self.items.iter_mut() {
+            menu_item.hover = false;
+            let dim = menu_item.dimensions();
+
+            if x > dim.0 && x < dim.2 && y > dim.1 && y < dim.3 {
+                menu_item.hover = true;
+            }
+        }
     }
 }

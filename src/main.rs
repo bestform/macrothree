@@ -39,6 +39,7 @@ const ENEMY_SIZE: f32 = 50.;
 const MESSAGE_LIFETIME: f64 = 1.;
 const POINTS_COLOR: Color = Color::new(0.6, 0.6, 0.9, 1.0);
 const MENU_COLOR: Color = Color::new(0.6, 0.6, 0.9, 1.0);
+const MENU_COLOR_HOVER: Color = Color::new(0.8, 0.8, 1.0, 1.0);
 
 fn window_conf() -> Conf {
     Conf {
