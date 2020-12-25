@@ -44,8 +44,8 @@ impl Game {
             let font = self.font;
             draw_text_ex(
                 &m.message,
-                m.pos.x() - text_size.0 / 2.,
-                m.pos.y(),
+                m.pos.x - text_size.width / 2.,
+                m.pos.y,
                 TextParams {
                     font,
                     font_size,
@@ -159,7 +159,7 @@ impl Game {
         draw_text_ex(
             &text,
             20.,
-            screen_height() - text_size.1 - 20.,
+            screen_height() - text_size.height - 20.,
             TextParams {
                 font,
                 font_size,

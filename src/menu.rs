@@ -36,8 +36,8 @@ impl MenuItem {
         };
         draw_text_ex(
             &text,
-            screen_width() / 2. - text_size.0 / 2.,
-            100. + self.order as f32 * (text_size.1 + 20.),
+            screen_width() / 2. - text_size.width / 2.,
+            100. + self.order as f32 * (text_size.height + 20.) + text_size.height,
             TextParams {
                 font,
                 font_size,
@@ -48,14 +48,15 @@ impl MenuItem {
         // debug
         /*
         draw_rectangle_lines(
-            screen_width() / 2. - text_size.0 / 2.,
-            100. + self.order as f32 * (text_size.1 + 20.) + 9.,
-            text_size.0,
-            text_size.1,
+            screen_width() / 2. - text_size.width / 2.,
+            100. + self.order as f32 * (text_size.height + 20.),
+            text_size.width,
+            text_size.height,
             1.0,
             RED
         );
         */
+
     }
 
     pub fn dimensions(&self) -> (f32, f32, f32, f32) {
@@ -63,11 +64,10 @@ impl MenuItem {
         let text = &self.title;
         let text_size = measure_text(text, Some(self.font), font_size as _, 1.0);
         // todo: extract to method
-        // todo: why are there 9 pixels offset when rendering at font size 30. Note: the offset changes with font size!
-        let (x, y) = (screen_width() / 2. - text_size.0 / 2., 100. + self.order as f32 * (text_size.1 + 20.) + 9.);
+        let (x, y) = (screen_width() / 2. - text_size.width / 2., 100. + self.order as f32 * (text_size.height + 20.));
 
 
-        (x, y, x + text_size.0, y + text_size.1)
+        (x, y, x + text_size.width, y + text_size.height)
     }
 }
 

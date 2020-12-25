@@ -385,9 +385,9 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
 name = "fontdue"
-version = "0.3.2"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "465d1be03e877f64083b0c941fa020e9a48c4b88fa2a294c79ec151714bb3e3d"
+checksum = "3203e88e086474e56b0785255804a0c23542f76253584d3f43152cd2bb95d0b7"
 dependencies = [
  "hashbrown",
  "ttf-parser",
@@ -411,9 +411,12 @@ checksum = "f6503fe142514ca4799d4c26297c4248239fe8838d827db6bd6065c6ed29a6ce"
 
 [[package]]
 name = "glam"
-version = "0.9.5"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8637c7ec4fd0776c51eeab3e0d5d1aa7e440ece3fc2ee7d674e13c957287bfc1"
+checksum = "579160312273c954cc51bd440f059dde741029ac8daf8c84fece76cb77f62c15"
+dependencies = [
+ "version_check",
+]
 
 [[package]]
 name = "glob"
@@ -619,9 +622,15 @@ dependencies = [
 
 [[package]]
 name = "macroquad"
-version = "0.3.0-alpha.12"
+version = "0.3.0-alpha.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3440a1a8f6ac7433d4affd39ba0844e99698935662c32438e3ee817217963c05"
+checksum = "205d79f3b2ac6592e577ac952dbef2d42c765885a500696799ec24bb2ebf2efb"
+replace = "macroquad 0.3.0-alpha.14 (git+https://github.com/not-fl3/macroquad)"
+
+[[package]]
+name = "macroquad"
+version = "0.3.0-alpha.14"
+source = "git+https://github.com/not-fl3/macroquad?branch=master#6d6f74ae6e87f8c2dcd777575838b2d5b28f0504"
 dependencies = [
  "fontdue",
  "glam",
@@ -635,14 +644,13 @@ dependencies = [
 [[package]]
 name = "macroquad_macro"
 version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88dc77cec2b364f6e0cba5701b20482ef5c7c87f5587ee9e9296240936eaaf8a"
+source = "git+https://github.com/not-fl3/macroquad?branch=master#6d6f74ae6e87f8c2dcd777575838b2d5b28f0504"
 
 [[package]]
 name = "macrothree"
 version = "0.1.0"
 dependencies = [
- "macroquad",
+ "macroquad 0.3.0-alpha.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "rodio",
 ]
 
@@ -679,9 +687,9 @@ dependencies = [
 
 [[package]]
 name = "miniquad"
-version = "0.3.0-alpha.22"
+version = "0.3.0-alpha.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d68c937440d197e0dcef5883223a311322f26fb75e66461c073284f152d4d0c"
+checksum = "8d01141de09407f60d58d9436c3fb1803cba167aa4e9e2c93203c11489fe9526"
 dependencies = [
  "sapp-android",
  "sapp-darwin",
@@ -984,9 +992,8 @@ dependencies = [
 
 [[package]]
 name = "quad-gl"
-version = "0.2.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "514e06833532fcfb4d62a4824dd809594dfd7e20f5067a2cf2f260485d35b8ec"
+version = "0.2.13"
+source = "git+https://github.com/not-fl3/macroquad?branch=master#6d6f74ae6e87f8c2dcd777575838b2d5b28f0504"
 dependencies = [
  "glam",
  "image",
@@ -1135,9 +1142,9 @@ dependencies = [
 
 [[package]]
 name = "sapp-linux"
-version = "0.1.9"
+version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae4803aaf4c6dc041cfe6dbc3e029b675e15b503204fca741661f0369f7548d4"
+checksum = "63af805bb4e755390e3b75615d6529cbbc81ab7376f6e62f5400df19c9e3f1c9"
 dependencies = [
  "libc",
 ]
