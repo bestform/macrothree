@@ -28,16 +28,17 @@ impl MenuItem {
     pub fn render(&self) {
         let font_size = 30;
         let text = &self.title;
-        let text_size = measure_text(text, Some(self.font), font_size as _, 1.0);
+        let text_size = self.measure();
         let font = self.font;
         let color = match self.hover {
             true => { MENU_COLOR_HOVER }
             false => { MENU_COLOR }
         };
+        let pos = self.pos(&text_size);
         draw_text_ex(
             &text,
-            screen_width() / 2. - text_size.width / 2.,
-            100. + self.order as f32 * (text_size.height + 20.) + text_size.height,
+            pos.0,
+            pos.1,
             TextParams {
                 font,
                 font_size,
@@ -48,26 +49,35 @@ impl MenuItem {
         // debug
         /*
         draw_rectangle_lines(
-            screen_width() / 2. - text_size.width / 2.,
-            100. + self.order as f32 * (text_size.height + 20.),
+            pos.0,
+            pos.1 - text_size.offset_y,
             text_size.width,
             text_size.height,
             1.0,
             RED
         );
         */
+    }
 
+    fn pos(&self, text_size: &TextDimensions) -> (f32, f32) {
+        let x = screen_width() / 2. - text_size.width / 2.;
+        let y = 100. + self.order as f32 * (text_size.offset_y + 20.) + text_size.offset_y;
+
+        (x, y)
+    }
+
+    fn measure(&self) -> TextDimensions {
+        let font_size = 30; // todo: duplicate definition with render
+        let text_size = measure_text(&self.title, Some(self.font), font_size as _, 1.0);
+
+        text_size
     }
 
     pub fn dimensions(&self) -> (f32, f32, f32, f32) {
-        let font_size = 30; // todo: duplicate definition with render
-        let text = &self.title;
-        let text_size = measure_text(text, Some(self.font), font_size as _, 1.0);
-        // todo: extract to method
-        let (x, y) = (screen_width() / 2. - text_size.width / 2., 100. + self.order as f32 * (text_size.height + 20.));
+        let text_size = self.measure();
+        let (x, y) = self.pos(&text_size);
 
-
-        (x, y, x + text_size.width, y + text_size.height)
+        (x, y - text_size.offset_y, x + text_size.width, y - text_size.offset_y + text_size.height)
     }
 }
 
