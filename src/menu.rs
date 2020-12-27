@@ -26,6 +26,35 @@ impl MenuItem {
 
     // todo: extract to renderer module
     pub fn render(&self) {
+
+        if self.hover {
+            let dim = self.dimensions();
+            draw_rectangle_lines(
+                dim.0 - 5.,
+                dim.1 - 5.,
+                dim.2 - dim.0 + 10.,
+                dim.3 - dim.1 + 10.,
+                3.,
+                MENU_COLOR_HOVER
+            );
+            draw_line(
+                screen_width() / 2. - 200.,
+                dim.1 + (dim.3 - dim.1) / 2.,
+                dim.0 - 5.,
+                dim.1 + (dim.3 - dim.1) / 2.,
+                2.,
+                MENU_COLOR_HOVER
+            );
+            draw_line(
+                screen_width() / 2. + 200.,
+                dim.1 + (dim.3 - dim.1) / 2.,
+                dim.0 + (dim.2 - dim.0) + 5.,
+                dim.1 + (dim.3 - dim.1) / 2.,
+                2.,
+                MENU_COLOR_HOVER
+            )
+        }
+
         let font_size = 30;
         let text = &self.title;
         let text_size = self.measure();
@@ -46,6 +75,8 @@ impl MenuItem {
                 color,
             },
         );
+
+
         // debug
         /*
         draw_rectangle_lines(
