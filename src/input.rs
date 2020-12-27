@@ -3,6 +3,7 @@ use crate::{PlayerMovementState};
 use crate::PlayerMovementState::{LEFT, RIGHT, UP, DOWN, IDLE};
 use crate::state::GameState;
 use crate::menu::Menu;
+use crate::menu::MenuState::CONTINUE;
 
 pub fn handle_global_shortcuts(current_state: GameState) -> GameState {
     if is_key_down(KeyCode::Q) {
@@ -44,7 +45,7 @@ pub fn handle_player_input() -> Vec<PlayerMovementState> {
 }
 
 impl Menu {
-    pub fn handle_click(&self, current_state: GameState) -> GameState {
+    pub fn handle_click(&mut self, current_state: GameState) -> GameState {
         if is_mouse_button_down(MouseButton::Left) {
             let (x, y) = mouse_position();
             for menu_item in self.items.iter() {
@@ -52,7 +53,10 @@ impl Menu {
 
                 if x > dim.0 && x < dim.2 && y > dim.1 && y < dim.3 {
                     let new_gamestate = match menu_item.id {
-                        0 => GameState::Playing,
+                        0 => {
+                            self.state = CONTINUE;
+                            GameState::Playing
+                        },
                         2 => GameState::GameOver,
                         _ => current_state
                     };

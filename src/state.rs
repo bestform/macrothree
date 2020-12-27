@@ -32,6 +32,7 @@ impl RunState for Menu {
     fn run(&mut self, _frame_t: f64, _audio: &mut Audio) -> GameState {
         let mut new_game_state = handle_global_shortcuts(GameState::Menu);
         self.handle_mouse_hover();
+        self.handle_state();
         new_game_state = self.handle_click(new_game_state);
         self.render();
 

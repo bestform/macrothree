@@ -1,8 +1,16 @@
 use macroquad::prelude::*;
 use crate::{MENU_COLOR, MENU_COLOR_HOVER};
+use crate::menu::MenuState::START;
+use MenuState::CONTINUE;
+
+pub(crate) enum MenuState {
+    START,
+    CONTINUE,
+}
 
 pub struct Menu {
-    pub(crate) items: Vec<MenuItem>
+    pub(crate) items: Vec<MenuItem>,
+    pub(crate) state: MenuState,
 }
 
 pub(crate) struct MenuItem {
@@ -118,7 +126,8 @@ impl Menu {
         let controls_item = MenuItem::new(1, "Controls").await;
         let quit_item = MenuItem::new(2, "Quit").await;
         Self {
-            items: vec![start_item, controls_item, quit_item]
+            items: vec![start_item, controls_item, quit_item],
+            state: START,
         }
     }
 
@@ -127,6 +136,22 @@ impl Menu {
         clear_background(BLACK);
         for menu_item in self.items.iter() {
             menu_item.render();
+        }
+    }
+
+    pub fn handle_state(&mut self) {
+        for item in self.items.iter_mut() {
+            if item.id == 0 {
+                // todo: this feels fragile as it depends on the menu initialization. But so does the click handler, so maybe just leave it as it is
+                match self.state {
+                    START => {
+                        item.title = "Start".to_string();
+                    }
+                    CONTINUE => {
+                        item.title = "Continue".to_string();
+                    }
+                }
+            }
         }
     }
 }
