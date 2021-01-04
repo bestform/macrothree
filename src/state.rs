@@ -3,6 +3,7 @@ use crate::audio::Audio;
 use crate::menu::Menu;
 use crate::input::handle_global_shortcuts;
 
+#[derive(PartialEq)]
 pub enum GameState {
     Menu,
     Playing,
@@ -16,11 +17,14 @@ pub trait RunState {
 impl RunState for Game {
     fn run(&mut self, frame_t: f64, audio: &mut Audio) -> GameState {
         let new_game_state = handle_global_shortcuts(GameState::Playing);
+        if new_game_state != GameState::Playing {
+            return new_game_state;
+        }
         self.handle_player_move_for_frame();
         self.handle_create_for_frame(audio, frame_t);
         self.handle_movement_for_frame();
         self.handle_lifetimes_for_frame(frame_t);
-        self.handle_collisions(audio);
+        let new_game_state = self.handle_collisions(audio, GameState::Playing);
         self.handle_points(frame_t);
         self.draw();
 

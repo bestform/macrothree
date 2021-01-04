@@ -21,7 +21,8 @@ impl Game {
                 self.bullets.clone(),
                 self.enemy_bullets.clone(),
                 self.particles.clone(),
-                self.enemies.clone()
+                self.enemies.clone(),
+                self.player.clone(),
             );
         }
     }
@@ -148,6 +149,26 @@ impl Game {
                 rotation: 0.0,
                 pivot: None,
             },
+        );
+
+
+        let health_percent:f32 = self.player.health as f32 / 100.;
+        let bar_width = 70.;
+        let bar_height = 10.;
+        let bar_border = 2.;
+        draw_rectangle(
+            self.player.pos.x() - bar_width / 2.,
+            self.player.pos.y() + PLAYER_SIZE,
+            bar_width,
+            bar_height,
+            DARKGRAY
+        );
+        draw_rectangle(
+            self.player.pos.x() - bar_width / 2. + bar_border,
+            self.player.pos.y() + PLAYER_SIZE + bar_border,
+            bar_width * health_percent - bar_border * 2.,
+            bar_height - bar_border * 2.,
+            BLUE
         );
     }
 

@@ -27,6 +27,7 @@ const BOTTOM_MARGIN: f32 = 20.;
 const TOP_MARGIN: f32 = 200.;
 const SIDE_MARGIN: f32 = 200.;
 const PLAYER_SIZE: f32 = 100.;
+const PLAYER_COLLISION: f32 = 30.;
 const BULLET_SPEED: f32 = -9.;
 const ENEMY_BULLET_SPEED: f32 = 6.;
 const BULLET_SIZE: f32 = 7.;

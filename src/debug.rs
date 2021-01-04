@@ -1,8 +1,8 @@
 use crate::{Star, Bullet, Particle};
 use macroquad::prelude::*;
-use crate::structs::Enemy;
+use crate::structs::{Enemy, Player};
 
-pub fn draw_debug(stars: Vec<Star>, bullets: Vec<Bullet>, enemy_bullets: Vec<Bullet>, particles: Vec<Particle>, enemies: Vec<Enemy>) {
+pub fn draw_debug(stars: Vec<Star>, bullets: Vec<Bullet>, enemy_bullets: Vec<Bullet>, particles: Vec<Particle>, enemies: Vec<Enemy>, player: Player) {
     draw_text(
         &std::fmt::format(format_args!("Stars: {}", stars.len())),
         10.,
@@ -42,6 +42,13 @@ pub fn draw_debug(stars: Vec<Star>, bullets: Vec<Bullet>, enemy_bullets: Vec<Bul
         &std::fmt::format(format_args!("FPS: {}", get_fps())),
         10.,
         120.,
+        20.,
+        WHITE,
+    );
+    draw_text(
+        &std::fmt::format(format_args!("Health: {}", player.health)),
+        10.,
+        140.,
         20.,
         WHITE,
     );

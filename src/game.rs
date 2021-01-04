@@ -32,6 +32,7 @@ impl Game {
             pos: Vec2::new(screen_width() / 2., screen_height() - PLAYER_SIZE - BOTTOM_MARGIN),
             vel: Vec2::new(0., 0.),
             last_shot: get_time(),
+            health: 100,
         };
 
 

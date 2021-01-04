@@ -49,6 +49,7 @@ pub struct Player {
     pub(crate) pos: Vec2,
     pub(crate) vel: Vec2,
     pub(crate) last_shot: f64,
+    pub(crate) health: i32,
 }
 
 #[derive(Clone, Copy)]
